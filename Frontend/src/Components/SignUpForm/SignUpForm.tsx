@@ -14,18 +14,22 @@ import {
 } from "../ui/input-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-function LoginForm() {
+function SignUpForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
     <form className="p-6 w-full max-w-full md:w-1/2">
       <div className="flex flex-col justify-center items-center">
         <img src={logo} alt="logo" className="w-20 h-18  " />
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Login</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+          Create an Account
+        </h2>
       </div>
 
       <div className="flex flex-col gap-2 ">
+        <Label htmlFor="Full Name">Full Name</Label>
+        <Input type="text" placeholder="Full Name" required />
         <Label htmlFor="email">Email</Label>
-        <Input type="email" placeholder="Email"  />
+        <Input type="email" placeholder="Email" required />
 
         <Label htmlFor="password">Password</Label>
         <InputGroup>
@@ -56,10 +60,7 @@ function LoginForm() {
             </Tooltip>
           </InputGroupAddon>
         </InputGroup>
-        <div className="flex flex-row space-between w-full">
-          
-          <p className="text-sm">Forgot Password?</p>
-        </div>
+        
 
         <Button>Submit</Button>
         <Button variant="outline">
@@ -67,11 +68,8 @@ function LoginForm() {
           Continue with Google
         </Button>
       </div>
-      <div className="flex flex-row w-full justify-center mt-5 md:">
-        <p >Don't have an Account ?<span className=""> Create One</span></p>
-      </div>
     </form>
   );
 }
 
-export default LoginForm;
+export default SignUpForm;
