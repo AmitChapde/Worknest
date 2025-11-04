@@ -12,61 +12,83 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "../ui/input-group";
+import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 function SignUpForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
-    <form className="p-6 w-full max-w-full md:w-1/2">
-      <div className="flex flex-col justify-center items-center">
-        <img src={logo} alt="logo" className="w-20 h-18  " />
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+    <form className="w-full max-w-md flex flex-col">
+      <div className="flex flex-col justify-center items-center mb-6">
+        <img src={logo} alt="logo" className="w-20 h-20" />
+        <h2 className="text-2xl font-semibold text-gray-800 mt-2">
           Create an Account
         </h2>
       </div>
 
-      <div className="flex flex-col gap-2 ">
-        <Label htmlFor="Full Name">Full Name</Label>
-        <Input type="text" placeholder="Full Name" required />
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" placeholder="Email" required />
+      <div className="flex flex-col gap-4 flex-grow">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="fullName">Full Name</Label>
+          <Input id="fullName" type="text" placeholder="Full Name" required />
+        </div>
 
-        <Label htmlFor="password">Password</Label>
-        <InputGroup>
-          <InputGroupInput placeholder="Password" type="password" />
-          <InputGroupAddon align="inline-end">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <InputGroupButton
-                  variant="ghost"
-                  aria-label="Info"
-                  size="icon-xs"
-                >
-                  <div>
-                    <span
-                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      <FontAwesomeIcon
-                        icon={showPassword ? faEyeSlash : faEye}
-                      />
-                    </span>
-                  </div>
-                </InputGroupButton>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{showPassword ? "show" : "hide"}</p>
-              </TooltipContent>
-            </Tooltip>
-          </InputGroupAddon>
-        </InputGroup>
-        
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" placeholder="Email" required />
+        </div>
 
-        <Button>Submit</Button>
-        <Button variant="outline">
-          <FontAwesomeIcon icon={faGoogle} style={{ color: "#DB4437" }} />
-          Continue with Google
-        </Button>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="password">Password</Label>
+          <InputGroup>
+            <InputGroupInput
+              placeholder="Password"
+              type={showPassword ? "text" : "password"}
+            />
+            <InputGroupAddon align="inline-end">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <InputGroupButton
+                    variant="ghost"
+                    aria-label="Toggle password visibility"
+                    size="icon-xs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowPassword(!showPassword);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={showPassword ? faEyeSlash : faEye}
+                      className="text-gray-500"
+                    />
+                  </InputGroupButton>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{showPassword ? "Hide" : "Show"} password</p>
+                </TooltipContent>
+              </Tooltip>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+
+        <div className="flex flex-col gap-2 mt-2">
+          <Button>Submit</Button>
+          <Button
+            variant="outline"
+            className="flex items-center justify-center gap-2"
+          >
+            <FontAwesomeIcon icon={faGoogle} style={{ color: "#DB4437" }} />
+            Continue with Google
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex justify-center py-4">
+        <p className="text-sm">
+          Already have an Account?{" "}
+          <Link to="/" className="text-blue-500 cursor-pointer">
+            Login
+          </Link>
+        </p>
       </div>
     </form>
   );

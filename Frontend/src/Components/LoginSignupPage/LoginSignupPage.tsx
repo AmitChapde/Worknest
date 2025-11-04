@@ -1,17 +1,17 @@
 import Spline from "@splinetool/react-spline";
 import SignUpForm from "../SignUpForm/SignUpForm";
-import { useState } from "react";
 import LoginForm from "../LoginForm/LoginForm";
+import { useLocation } from "react-router-dom";
 
 function LoginSignupPage() {
-  const [showLogin, setshowLogin] = useState<boolean>(true);
+  const location = useLocation();
+  const showLogin = location.pathname !== "/auth/signup";
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 h-screen w-screen">
-      {/* Left Grid Cell */}
-      <div className="relative bg-black overflow-hidden flex flex-col justify-center items-center">
+    <div className="flex flex-col md:flex-row h-full md:h-screen w-full">
+      <div className="relative flex-1 bg-black flex justify-center items-center overflow-hidden">
         <Spline
-          className="absolute inset-0 scale-110"
+          className="absolute inset-0 scale-110 pointer-events-none"
           scene="https://prod.spline.design/RYiWo5cRdhJm0gBV/scene.splinecode"
         />
         <h1 className="relative z-10 text-3xl md:text-4xl font-bold text-white text-center tracking-tight whitespace-nowrap">
@@ -19,8 +19,7 @@ function LoginSignupPage() {
         </h1>
       </div>
 
-      {/* Right Grid Cell */}
-      <div className="flex flex-col justify-center items-center bg-white p-6 md:p-10">
+      <div className="flex-1 flex flex-col justify-center items-center bg-white p-6 md:p-10">
         {showLogin ? <LoginForm /> : <SignUpForm />}
       </div>
     </div>
