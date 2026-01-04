@@ -1,6 +1,19 @@
+import { Document } from "mongoose";
 
-export interface createUser{
-    name:String;
-    email:String;
-    password:String;
+export interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+  correctPassword(enteredPassword: string): Promise<boolean>;
+}
+
+export interface RegisterInput {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
 }

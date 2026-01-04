@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
+import { IUser } from "../types/user.types";
 
-const userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema<IUser>(
   {
     name: { type: String, required: true },
     email: {
@@ -14,7 +15,7 @@ const userSchema = new mongoose.Schema(
         message: "Invalid Email Address",
       },
     },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false, minLength: 8 },
   },
   {
     timestamps: true,
@@ -27,9 +28,17 @@ userSchema.pre("save", async function (next) {
 
   this.password = await bcrypt.hash(this.password, 10);
 
-  next()
+  next();
 });
 
-const User = mongoose.model("User", userSchema);
+//Instance method to compare passwords
+userSchema.methods.correctPassword = async function (
+  this:IUser,
+  userPassword: string
+): Promise<boolean> {
+  return await bcrypt.compare(userPassword,this.password);
+};
 
-export default User;
+const User = mongoose.model<IUser>("User", userSchema);
+
+export default User;  
