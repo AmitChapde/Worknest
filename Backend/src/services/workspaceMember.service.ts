@@ -26,10 +26,17 @@ const createWorkspaceMember = async ({
   return newWorkspaceMember;
 };
 
+const getWorkspaceMembersByWorkspaceId = async (workspaceId: string) => {
+  const workspaceMembers = await WorkspaceMember.findById(workspaceId).populate(
+    "userId",
+    "name email"
+  );
+  return workspaceMembers;
+};
 const inviteWorkspaceMember = async ({
   workspaceId,
   invitedUserId,
   role,
 }: InviteWorkspaceMemberInput) => {};
 
-export { createWorkspaceMember };
+export { createWorkspaceMember ,getWorkspaceMembersByWorkspaceId};
