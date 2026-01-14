@@ -74,10 +74,7 @@ const deleteBoardByIdController=async(req:Request,res:Response)=>{
     try {
         const {boardId}=req.params; 
         await deleteBoardById(boardId);
-        res.status(204).json({
-            status:"success",
-            data:null
-        })
+        res.status(204).send()
     } catch (error) {
         res.status(500).json({message:"Error deleting board"})
     }   

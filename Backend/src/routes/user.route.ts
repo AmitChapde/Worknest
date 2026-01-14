@@ -14,4 +14,6 @@ router.get("/",protectController,getAllUsersController);
 router.get("/:id", getUserByIdController);
 
 
+
+
 export default router;

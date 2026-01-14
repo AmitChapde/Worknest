@@ -9,6 +9,7 @@ import {
   protectController,
   restrictToController,
 } from "../controllers/auth.controller";
+import restrictBoardRole from "../middlewares/restrictBoardRole";
 
 const router = express.Router();
 
@@ -28,9 +29,10 @@ router.get(
 
 router.get("/boards/:boardId", protectController, getBoardByIdController);
 
-// router.delete(
-//   "/boards/:boardId",
-//   protectController,
-//   deleteBoardByIdController
-// );
+router.delete(
+  "/boards/:boardId",
+  protectController,
+  restrictBoardRole("ADMIN"),
+  deleteBoardByIdController
+);
 export default router;
