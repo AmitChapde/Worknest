@@ -8,6 +8,7 @@ import workspaceRoutes from "./routes/workspace.route";
 import workspaceMemberRoutes from "./routes/workspacemember.route";
 import boardRoutes from "./routes/boards.route";
 import taskRoutes from "./routes/task.route";
+import commentRoutes from "./routes/comments.route";
 
 
 dotenv.config();
@@ -29,7 +30,8 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/workspaces", workspaceRoutes);
 app.use("/api/v1/workspaces", workspaceMemberRoutes);
 app.use("/api/v1", boardRoutes);
-app.use("/api/v1",taskRoutes)
+app.use("/api/v1", taskRoutes);
+app.use("/api/v1", commentRoutes);
 
 const PORT = process.env.PORT || 5000;
 

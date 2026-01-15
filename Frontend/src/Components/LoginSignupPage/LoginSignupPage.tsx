@@ -15,7 +15,7 @@ function LoginSignupPage() {
           scene="https://prod.spline.design/RYiWo5cRdhJm0gBV/scene.splinecode"
         />
         <h1 className="relative z-10 text-3xl md:text-4xl font-bold text-white text-center tracking-tight whitespace-nowrap">
-          Bring your projects to Life
+          Bring your Ideas to Life
         </h1>
       </div>
 
