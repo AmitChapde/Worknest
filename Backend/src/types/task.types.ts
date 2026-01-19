@@ -8,6 +8,8 @@ export interface ITask extends Document {
   createdBy: Types.ObjectId;
   status: "TODO" | "IN_PROGRESS" | "DONE";
   order: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface createTaskInput {
@@ -31,6 +33,7 @@ export interface ReorderTaskInput {
   boardId: Types.ObjectId;
   status: "TODO" | "IN_PROGRESS" | "DONE";
   orderedTaskIds: string[];
+  lastKnownUpdatedAt: string;
 }
 
 export interface MoveTaskInput {
@@ -39,4 +42,6 @@ export interface MoveTaskInput {
   fromStatus: "TODO" | "IN_PROGRESS" | "DONE";
   toStatus: "TODO" | "IN_PROGRESS" | "DONE";
   toIndex: number;
+  fromUpdatedAt: string;
+  toUpdatedAt: string;
 }

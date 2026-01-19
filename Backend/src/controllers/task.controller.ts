@@ -9,6 +9,7 @@ import {
   moveTaskAcrossStatus,
 } from "../services/task.service";
 
+
 const createTaskController = async (req: Request, res: Response) => {
   try {
     const { title, description, status, order } = req.body;
@@ -93,16 +94,18 @@ const deleteTaskController = async (req: Request, res: Response) => {
 const reorderTasksInStatusController = async (req: Request, res: Response) => {
   try {
     const { boardId } = req.params;
-    const { status, orderedTaskIds } = req.body;
+    const { status, orderedTaskIds, lastKnownUpdatedAt } = req.body;
 
-    if (!status || !orderedTaskIds?.length) {
+    if (!status || !orderedTaskIds?.length || !lastKnownUpdatedAt) {
       return res.status(400).json({ message: "Invalid payload" });
     }
+
 
     await reorderTasksInStatus({
       boardId: new mongoose.Types.ObjectId(boardId),
       status,
       orderedTaskIds,
+      lastKnownUpdatedAt
     });
 
     return res.status(200).json({
@@ -110,14 +113,24 @@ const reorderTasksInStatusController = async (req: Request, res: Response) => {
       message: "Tasks reordered successfully",
     });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    if (error.message.includes("changed")) {
+      return res.status(409).json({ message: error.message });
+    }
+    return res.status(400).json({ message: error.message });
   }
 };
 
 const moveTaskAcrossStatusController = async (req: Request, res: Response) => {
   try {
     const { boardId } = req.params;
-    const { taskId, fromStatus, toStatus, toIndex } = req.body;
+    const { taskId, fromStatus, toStatus, toIndex, fromUpdatedAt, toUpdatedAt } = req.body;
+
+
+    if (!fromUpdatedAt || !toUpdatedAt) {
+      return res.status(400).json({ message: "Missing column timestamps" });
+
+    }
+
 
     await moveTaskAcrossStatus({
       boardId: new mongoose.Types.ObjectId(boardId),
@@ -125,11 +138,18 @@ const moveTaskAcrossStatusController = async (req: Request, res: Response) => {
       fromStatus,
       toStatus,
       toIndex,
+      fromUpdatedAt,
+      toUpdatedAt
     });
+
+
     return res.status(200).json({
       message: "Task moved successfully",
     });
-  } catch (error:any) {
+  } catch (error: any) {
+    if (error.message.includes("changed")) {
+      return res.status(409).json({ message: error.message });
+    }
     return res.status(400).json({ message: error.message });
   }
 };

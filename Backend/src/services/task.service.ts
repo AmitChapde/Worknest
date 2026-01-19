@@ -54,7 +54,25 @@ const reorderTasksInStatus = async ({
   boardId,
   status,
   orderedTaskIds,
+  lastKnownUpdatedAt
 }: ReorderTaskInput) => {
+
+  //OPTIMISTIC LOCKING  
+  const latestTask = await Task.findOne({
+    boardId,
+    status,
+  }).sort({ updatedAt: -1 });
+
+  if (
+    latestTask &&
+    latestTask.updatedAt.getTime() >
+    new Date(lastKnownUpdatedAt).getTime()
+  ) {
+    throw new Error("Column has changed. Please refresh.");
+  }
+
+
+
   //fetch tasks in the board and status
   const tasks = await Task.find({
     boardId,
@@ -92,13 +110,43 @@ const reorderTasksInStatus = async ({
   await Task.bulkWrite(bulkOps);
 };
 
-const   moveTaskAcrossStatus = async ({
+const moveTaskAcrossStatus = async ({
   boardId,
   taskId,
   fromStatus,
   toStatus,
   toIndex,
+  fromUpdatedAt,
+  toUpdatedAt
 }: MoveTaskInput) => {
+
+  const latestFrom = await Task.findOne({
+    boardId,
+    status: fromStatus,
+  }).sort({ updatedAt: -1 });
+
+  if (
+    latestFrom &&
+    latestFrom.updatedAt.getTime() >
+    new Date(fromUpdatedAt).getTime()
+  ) {
+    throw new Error("Source column has changed. Please refresh.");
+  }
+
+  const latestTo = await Task.findOne({
+    boardId,
+    status: toStatus,
+  }).sort({ updatedAt: -1 });
+
+  if (
+    latestTo &&
+    latestTo.updatedAt.getTime() >
+    new Date(toUpdatedAt).getTime()
+  ) {
+    throw new Error("Destination column has changed. Please refresh.");
+  }
+
+
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -122,7 +170,7 @@ const   moveTaskAcrossStatus = async ({
       .sort({ order: 1 })
       .session(session);
 
-      //mapping over every source, filter of that particular task and update its order with index only 
+    //mapping over every source, filter of that particular task and update its order with index only 
     const sourceBulkOps = sourceTasks.map((t, index) => ({
       updateOne: {
         filter: { _id: t._id },

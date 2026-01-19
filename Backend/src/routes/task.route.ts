@@ -10,8 +10,7 @@ import {
   reorderTasksInStatusController,
   moveTaskAcrossStatusController,
 } from "../controllers/task.controller";
-import loadWorkspaceMember from "../middlewares/loadWorkspaceMember";
-import restrictWorkspaceRoles from "../middlewares/restrictWorkspaceRoles";
+
 
 const router = express.Router();
 
