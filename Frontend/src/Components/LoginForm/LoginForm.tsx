@@ -12,34 +12,78 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "../ui/input-group";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useAuth } from "../../features/auth/context/AuthContext";
+import type { LoginPayload } from "../../api/auth/auth.types";
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      if (!email || !password) {
+        setError("Please fill in all fields");
+        setLoading(false);
+        return;
+      }
+
+      const formData: LoginPayload = { email, password };
+      await login(formData);
+      navigate("/dashboard");
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Login failed. Please try again."
+      );
+      setLoading(false);
+    }
+  };
   return (
-    <form className="w-full max-w-md flex flex-col">
-  
+    <form className="w-full max-w-md flex flex-col" onSubmit={handleSubmit}>
       <div className="flex flex-col justify-center items-center mb-6">
         <img src={logo} alt="logo" className="w-20 h-20" />
         <h2 className="text-2xl font-semibold text-gray-800 mt-2">Login</h2>
       </div>
 
-   
-      <div className="flex flex-col gap-4 flex-grow">
-     
+      <div className="flex flex-col gap-4 grow">
+        {error && (
+          <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
         <div className="flex flex-col gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input type="email" placeholder="Email" />
+          <Input
+            id="email"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
 
         <div className="flex flex-col gap-2 relative">
           <Label htmlFor="password">Password</Label>
           <InputGroup>
             <InputGroupInput
+              id="password"
               placeholder="Password"
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <InputGroupAddon align="inline-end">
               <Tooltip>
@@ -48,7 +92,10 @@ function LoginForm() {
                     variant="ghost"
                     aria-label="Toggle password visibility"
                     size="icon-xs"
-                    onClick={(e) => {e.preventDefault(); setShowPassword(!showPassword);}} 
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                      e.preventDefault();
+                      setShowPassword(!showPassword);
+                    }}
                   >
                     <FontAwesomeIcon
                       icon={showPassword ? faEyeSlash : faEye}
@@ -64,15 +111,20 @@ function LoginForm() {
           </InputGroup>
         </div>
 
-    
         <div className="flex justify-end">
-          <p className="text-sm text-blue-500 cursor-pointer">Forgot Password?</p>
+          <p className="text-sm text-blue-500 cursor-pointer">
+            Forgot Password?
+          </p>
         </div>
 
-       
         <div className="flex flex-col gap-2">
-          <Button>Submit</Button>
-          <Button variant="outline" className="flex items-center justify-center gap-2">
+          <Button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Submit"}
+          </Button>
+          <Button
+            variant="outline"
+            className="flex items-center justify-center gap-2 hidden"
+          >
             <FontAwesomeIcon icon={faGoogle} style={{ color: "#DB4437" }} />
             Continue with Google
           </Button>

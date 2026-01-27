@@ -27,7 +27,7 @@ app.use(express.json());
 
 connectDB();
 
-app.use("/api/auth", authRoutes);
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/workspaces", workspaceRoutes);
 app.use("/api/v1/workspaces", workspaceMemberRoutes);
